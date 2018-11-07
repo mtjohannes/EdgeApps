@@ -1,0 +1,27 @@
+{
+    "blocks": {
+        "mqtt_source": {
+            "type": "cdpin",
+            "config": {
+                "transport_addr": "mqtt-tcp://predix-edge-broker",
+                "method": "sub",
+                "node_ref": "iqp_data",
+                "log_level": "debug",
+                "log_name": "mqtt_source"
+            }
+        },
+        "mqtt_sink": {
+            "type": "cdpout",
+            "config": {
+                "transport_addr": "mqtt-tcp://3.39.89.88:1883",
+                "method": "pub",
+                "node_ref": "IQP_GE/ev1230",
+                "log_level": "debug",
+                "log_name": "mqtt_sink"
+            }
+        }
+    },
+    "mappings": {
+        "mqtt_source:output": "mqtt_sink:input"
+    }
+  }

@@ -1,0 +1,30 @@
+{
+    "blocks": {
+        "time_series_sender": {
+            "type": "timeseries",
+            "config": {
+                "log_name": "time_series_sender",
+                "log_level": "debug",
+                "mqtt": {
+                    "transport_addr": "mqtt-tcp://predix-edge-broker",
+                    "qos": 0,
+                    "client_id": "time_series_sender_mqtt_client",
+                    "topics": [
+                        "timeseries_data"
+                    ]
+                },
+                "store_forward": {
+                    "policy": "store_always",
+                    "max_store_percent": 75,
+                    "max_batch_interval": 1000
+                },
+                "timeseries": {
+                    "transport_addr": "wss://gateway-predix-data-services.run.aws-usw02-pr.ice.predix.io/v1/stream/messages",
+                    "predix_zone_id": "8638c58c-778d-4320-aee8-b194bf002952",
+                    "token_file": "/edge-agent/access_token",
+                    "proxy_url": "$http_proxy"
+                }
+            }
+        }
+    }
+}

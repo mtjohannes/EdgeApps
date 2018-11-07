@@ -1,0 +1,83 @@
+{
+  "blocks": {
+    "opcua": {
+      "type": "opcuapollflat",
+      "config": {
+          "transport_addr": "opc-tcp://192.168.179.1:53530/OPCUA/SimulationServer",
+          "interval": 1000,
+          "log_level": "warn",
+          "data_map": [
+              {
+                "alias": "Temp_data",
+                "id": "ns=5;s=Sinusoid1"
+              },
+              {
+                "alias": "Humidity_data",
+                "id": "ns=5;s=Sawtooth1"
+              },
+              {
+                "alias": "Light_data",
+                "id": "ns=5;s=TriangleNode1"
+              },
+              {
+                "alias": "Windspeed_data",
+                "id": "ns=5; s=Sinusoid2"
+              },
+              {
+                "alias": "WindDir_data",
+                "id": "ns=5; s=Sinusoid3"
+              },
+              {
+                "alias": "Windspeed_data",
+                "id": "ns=5; s=Sinusoid4"
+              },
+              {
+                "alias": "Pressure_data",
+                "id": "ns=5; s=Sinusoid5"
+              }
+
+          ]
+      }
+    },
+    "flat_to_timeseries": {
+      "type": "flattotimeseries",
+      "config": {
+        "attributes": {
+          "machine_type": "opcua"
+        }
+      }
+    },
+    "splitter": {
+      "type": "splitter",
+      "config": {
+          "output_count": 2
+      }
+    },
+    "mqtt_timeseries": {
+      "type": "cdpout",
+      "config": {
+        "transport_addr": "mqtt-tcp://predix-edge-broker",
+        "node_ref": "timeseries_data",
+        "method": "pub",
+        "log_level": "warn",
+        "log_name": "mqtt_timeseries"
+      }
+    },
+    "mqtt_iqp_broker": {
+      "type": "cdpout",
+      "config": {
+        "transport_addr": "mqtt-tcp://predix-edge-broker",
+        "node_ref": "iqp_data",
+        "method": "pub",
+        "log_level": "warn",
+        "log_name": "mqtt_historian"
+      }
+    }
+  },
+  "mappings": {
+    "opcua:output": "flat_to_timeseries:input",
+    "flat_to_timeseries:output":"splitter:input",
+    "splitter:output1":"mqtt_timeseries:input",
+    "splitter:output2":"mqtt_iqp_broker:input"
+  }
+}

@@ -1,0 +1,34 @@
+version: "3.0"
+
+services:
+  opcua:
+    image: "dtr.predix.io/predix-edge/protocol-adapter-opcua:amd64-latest"
+    environment:
+      config: "/config/config-opcua.json"
+    networks:
+      - predix-edge-broker_net
+
+  cloud_gateway:
+    image: "dtr.predix.io/predix-edge/cloud-gateway:amd64-latest"
+    environment:
+      config: "/config/config-cloud-gateway.json"
+    env_file:
+      - /etc/environment
+    networks:
+      - predix-edge-broker_net
+  
+  iqp-edge:
+    image: "iqp-edge-app:latest"
+    environment:
+      - PYTHONUNBUFFERED=0 # To shows print statements in docker logs
+      - BROKER=predix-edge-broker
+      - SUB_TOPIC=iqp_data
+      - PUB_TOPIC=IQP_GE/ev1230
+    networks:
+      - predix-edge-broker_net
+
+  
+networks:
+  predix-edge-broker_net:
+    external: true
+
